@@ -37,6 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # REST
+    'rest_framework',
+    'rest_framework_gis',
+
+    # GIS
+    'django.contrib.gis',
+
+    # API
+
+    # APPS
+    'supply.apps.SupplyConfig',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +88,12 @@ WSGI_APPLICATION = 'JsonRestApi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'geo_django_db',
+        'USER': 'geo_django',
+        'PASSWORD': 'geo_django_secret',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
