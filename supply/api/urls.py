@@ -1,29 +1,38 @@
-from django.urls import path
+from django.urls import path, include
 
 from .views import (
     # SUPPLIER
-    SupplierCreateApiView,
     SupplierDetailApiView,
-    SupplierDeleteApiView,
-    SupplierUpdateApiView,
     SupplierListApiView,
 
     # SERVICE AREAS
-    ServiceAreaListApiView,
     ServiceAreaDetailApiView,
+    ServiceAreaListApiView,
+
+
+    # SERVICE
+    ServiceDetailApiView,
+    ServiceListApiView,
+
+    # SUPPLIER SELECTION
+    SupplierSelectionListApiView,
 )
 
 
 app_name = 'api-supply'
 urlpatterns = [
     # SUPPLIER
-    path('create/', SupplierCreateApiView.as_view(), name='create'),
-    path('<int:pk>/edit/', SupplierUpdateApiView.as_view(), name='update'),
-    path('<int:pk>/delete/', SupplierDeleteApiView.as_view(), name='delete'),
-    path('<int:pk>/', SupplierDetailApiView.as_view(), name='detail'),
-    path('', SupplierListApiView.as_view(), name='index'),
+    path('suppliers/', SupplierListApiView.as_view(), name='suppliers-list'),
+    path('suppliers/<int:pk>/', SupplierDetailApiView.as_view(), name='suppliers-detail'),
 
     # SERVICE AREAS
     path('service_areas/', ServiceAreaListApiView.as_view(), name='service-area-list'),
     path('service_areas/<int:pk>/', ServiceAreaDetailApiView.as_view(), name='service-area-detail'),
+
+    # SERVICE
+    path('services/', ServiceListApiView.as_view(), name='service-list'),
+    path('services/<int:pk>/', ServiceDetailApiView.as_view(), name='service-detail'),
+
+    # SUPPLIER SELECTION
+    path('selection/', SupplierSelectionListApiView.as_view(), name='selection-list'),
 ]

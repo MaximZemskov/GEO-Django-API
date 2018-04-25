@@ -1,4 +1,5 @@
-from django.db.models import Q
+from django.contrib.gis.geos import Point
+from django.db.models import Prefetch
 
 from rest_framework.filters import (
     SearchFilter,
@@ -13,116 +14,121 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 
-
 from rest_framework.permissions import (
-    AllowAny,
-    IsAuthenticated,
-    IsAdminUser,
     IsAuthenticatedOrReadOnly,
 )
 
 from supply.models import (
     Supplier,
     ServiceArea,
+    Service
 )
 
 from .pagination import (
-    SupplierLimitOffsetPagination,
-    SupplierPageNumberPagination,
+    CustomLimitOffsetPagination,
 )
 
 from .serializers import (
     # SUPPLIER
-    SupplierCreateSerializer,
     SupplierDetailSerializer,
     SupplierListSerializer,
 
     # SERVICE AREA
     ServiceAreaSerializer,
+
+    # SERVICE
+    ServiceSerializer,
+
+    # SUPPLIER SELECTION
+    SupplierSelectionSerializer,
+    ServiceAreaSelectionSerializer,
+    ServiceSelectionSerializer,
 )
 
 
 # SUPPLIER
 
-class SupplierCreateApiView(CreateAPIView):
-    queryset = Supplier.objects.all()
-    serializer_class = SupplierCreateSerializer
-    permission_classes = [IsAuthenticated]
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
-
-
-class SupplierDetailApiView(RetrieveAPIView):
-    queryset = Supplier.objects.all()
-    serializer_class = SupplierDetailSerializer
-
-
-class SupplierDeleteApiView(DestroyAPIView):
-    queryset = Supplier.objects.all()
-    serializer_class = SupplierDetailSerializer
-
-
-class SupplierUpdateApiView(RetrieveUpdateAPIView):
+class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierDetailSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    # def perform_update(self, serializer):
-    #     serializer.save(user=self.request.user)
 
-
-class SupplierListApiView(ListAPIView):
+class SupplierListApiView(ListAPIView, CreateAPIView):
+    queryset = Supplier.objects.all()
     serializer_class = SupplierListSerializer
-    pagination_class = SupplierLimitOffsetPagination # PageNumberPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = CustomLimitOffsetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
-
-    def get_queryset(self, *args, **kwargs):
-        queryset_list = Supplier.objects.all()
-        return queryset_list
 
 
 # SERVICE AREA
 
-# class ServiceAreaCreateApiView(CreateAPIView):
-#     queryset = Supplier.objects.all()
-#     serializer_class = SupplierCreateSerializer
-#     permission_classes = [IsAuthenticated]
-#
-#     # def perform_create(self, serializer):
-#     #     serializer.save(user=self.request.user)
-
-
-class ServiceAreaDetailApiView(RetrieveAPIView):
+class ServiceAreaDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-# class ServiceAreaDeleteApiView(DestroyAPIView):
-#     queryset = Supplier.objects.all()
-#     serializer_class = SupplierDetailSerializer
-
-#
-# class ServiceAreaUpdateApiView(RetrieveUpdateAPIView):
-#     queryset = Supplier.objects.all()
-#     serializer_class = SupplierDetailSerializer
-#     permission_classes = [IsAuthenticatedOrReadOnly]
-#
-#     # def perform_update(self, serializer):
-#     #     serializer.save(user=self.request.user)
-
-
-class ServiceAreaListApiView(ListAPIView):
+class ServiceAreaListApiView(ListAPIView, CreateAPIView):
+    queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
-    pagination_class = SupplierLimitOffsetPagination  # PageNumberPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = CustomLimitOffsetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
 
-    def get_queryset(self, *args, **kwargs):
-        queryset_list = ServiceArea.objects.all()
-        return queryset_list
+
+# SERVICE
+
+class ServiceDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
+class ServiceListApiView(ListAPIView, CreateAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = CustomLimitOffsetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title']
 
 
+# SUPPLIER SELECTION
+
+class SupplierSelectionListApiView(ListAPIView):
+    serializer_class = SupplierSelectionSerializer
+
+    def get_queryset(self):
+        latitude = self.request.query_params.get('x', None)
+        longitude = self.request.query_params.get('y', None)
+        service = self.request.query_params.get('service', None)
+
+        if latitude and longitude:
+            point = Point(float(latitude), float(longitude), srid=4326)
+            queryset = ServiceArea.objects.filter(poly__intersects=point).select_related('supplier')
+        else:
+            queryset = ServiceArea.objects.select_related('supplier').all()
+        if service:
+            service_areas_suppliers = Service.objects.filter(title=service).prefetch_related(
+                Prefetch(
+                    'service_area',
+                    queryset=queryset,
+                    to_attr='queryset'
+                ),
+            )
+        else:
+            service_areas_suppliers = Service.objects.prefetch_related(
+                Prefetch(
+                    'service_area',
+                    queryset=queryset,
+                    to_attr='queryset'
+                ),
+            ).all()
+        return queryset
+        # else:
+        #     pass  # !TODO raise error or something

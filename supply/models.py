@@ -7,7 +7,7 @@ from django.contrib.gis.db import models as geo_models
 
 
 class Supplier(models.Model):
-    title = models.CharField('Название', max_length=60)
+    title = models.CharField('Название', max_length=60, unique=True)
     email = models.EmailField(verbose_name='Почта')
     phone_number = models.CharField('Номер телефона', max_length=15)
     address = models.CharField('Адрес центрального офиса', max_length=120)
@@ -21,9 +21,9 @@ class Supplier(models.Model):
 
 
 class ServiceArea(models.Model):
-    title = models.CharField('Название области', max_length=120)
+    title = models.CharField('Название области', max_length=120, unique=True)
     poly = geo_models.PolygonField('Область', null=True)
-    supplier = models.ForeignKey(Supplier, related_name='service_areas', on_delete=models.CASCADE, null=True)
+    supplier = models.ForeignKey(Supplier, related_name='areas', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Сервисная зона'
@@ -34,9 +34,9 @@ class ServiceArea(models.Model):
 
 
 class Service(models.Model):
-    title = models.CharField('Название услуги', max_length=120)
+    title = models.CharField('Название услуги', max_length=120, unique=True)
     price = models.CharField('Цена услуги', max_length=60)
-    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE, null=True)
+    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Услуга'
