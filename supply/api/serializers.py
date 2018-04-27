@@ -101,11 +101,12 @@ class ServiceSelectionSerializer(ModelSerializer):
         )
 
 
-class ServiceAreaSelectionSerializer(ModelSerializer):
+class ServiceAreaSelectionSerializer(GeoFeatureModelSerializer):
     services = ServiceSelectionSerializer(many=True)
 
     class Meta:
         model = ServiceArea
+        geo_field = 'poly'
         fields = (
             'title',
             'services',
@@ -119,5 +120,8 @@ class SupplierSelectionSerializer(ModelSerializer):
         model = Supplier
         fields = (
             'title',
-            'areas',
+            'areas'
         )
+
+
+

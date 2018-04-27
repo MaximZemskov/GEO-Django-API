@@ -106,29 +106,23 @@ class SupplierSelectionListApiView(ListAPIView):
     def get_queryset(self):
         latitude = self.request.query_params.get('x', None)
         longitude = self.request.query_params.get('y', None)
-        service = self.request.query_params.get('service', None)
+        service_title = self.request.query_params.get('title', None)
 
-        if latitude and longitude:
-            point = Point(float(latitude), float(longitude), srid=4326)
-            queryset = ServiceArea.objects.filter(poly__intersects=point).select_related('supplier')
-        else:
-            queryset = ServiceArea.objects.select_related('supplier').all()
-        if service:
-            service_areas_suppliers = Service.objects.filter(title=service).prefetch_related(
-                Prefetch(
-                    'service_area',
-                    queryset=queryset,
-                    to_attr='queryset'
-                ),
+        point = Point(float(latitude), float(longitude), srid=4326) if latitude and longitude else None
+        if point and service_title:
+            queryset = Supplier.objects.prefetch_related('areas__services').filter(
+                areas__poly__intersects=point,
+                areas__services__title=service_title,
+            )
+        elif point:
+            queryset = Supplier.objects.prefetch_related('areas__services').filter(
+                areas__poly__intersects=point
+            )
+        elif service_title:
+            queryset = Supplier.objects.prefetch_related('areas__services').filter(
+                areas__services__title=service_title
             )
         else:
-            service_areas_suppliers = Service.objects.prefetch_related(
-                Prefetch(
-                    'service_area',
-                    queryset=queryset,
-                    to_attr='queryset'
-                ),
-            ).all()
+            queryset = []
         return queryset
-        # else:
-        #     pass  # !TODO raise error or something
+
