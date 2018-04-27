@@ -1,6 +1,6 @@
 # JSON REST API
 
-API allows you to mark **service areas** on a map <s>and filter them by point intersection and title of service</s>(not yet).
+API allows you to mark **service areas** on a map and filter them by point intersection and title of service.
 
 
 ## Installation
