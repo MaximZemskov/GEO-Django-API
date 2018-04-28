@@ -109,20 +109,14 @@ class SupplierSelectionListApiView(ListAPIView):
         service_title = self.request.query_params.get('title', None)
 
         point = Point(float(latitude), float(longitude), srid=4326) if latitude and longitude else None
-        if point and service_title:
-            queryset = Supplier.objects.prefetch_related('areas__services').filter(
-                areas__poly__intersects=point,
-                areas__services__title=service_title,
-            )
-        elif point:
-            queryset = Supplier.objects.prefetch_related('areas__services').filter(
-                areas__poly__intersects=point
-            )
-        elif service_title:
-            queryset = Supplier.objects.prefetch_related('areas__services').filter(
-                areas__services__title=service_title
-            )
-        else:
-            queryset = []
+        queryset = []
+        filter_params = {
+            'areas__poly__intersects': point,
+            'areas__services__title': service_title
+        }
+        filter_params = {k: v for k, v in filter_params.items() if v is not None}
+
+        if filter_params:
+            queryset = Supplier.objects.prefetch_related('areas__services').filter(**filter_params)
         return queryset
 
