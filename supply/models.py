@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geo_models
 
-from .validation import validate_phonenumber
+from .validators import validate_phonenumber
 
 
 # Create your models here.
