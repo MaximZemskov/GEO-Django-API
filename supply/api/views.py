@@ -1,5 +1,5 @@
 from django.contrib.gis.geos import Point
-from django.db.models import Prefetch
+from django.core.exceptions import ValidationError
 
 from rest_framework.filters import (
     SearchFilter,
@@ -41,8 +41,6 @@ from .serializers import (
 
     # SUPPLIER SELECTION
     SupplierSelectionSerializer,
-    ServiceAreaSelectionSerializer,
-    ServiceSelectionSerializer,
 )
 
 
@@ -102,14 +100,20 @@ class ServiceListApiView(ListAPIView, CreateAPIView):
 
 class SupplierSelectionListApiView(ListAPIView):
     serializer_class = SupplierSelectionSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         latitude = self.request.query_params.get('x', None)
         longitude = self.request.query_params.get('y', None)
         service_title = self.request.query_params.get('title', None)
 
-        point = Point(float(latitude), float(longitude), srid=4326) if latitude and longitude else None
         queryset = []
+
+        try:
+            point = Point(float(latitude), float(longitude), srid=4326) if latitude and longitude else None
+        except ValueError:
+            point = None
+
         filter_params = {
             'areas__poly__intersects': point,
             'areas__services__title': service_title

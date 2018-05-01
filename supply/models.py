@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as geo_models
 
+from .validation import validate_phonenumber
+
 
 # Create your models here.
 
@@ -9,7 +11,7 @@ from django.contrib.gis.db import models as geo_models
 class Supplier(models.Model):
     title = models.CharField('Название', max_length=60, unique=True)
     email = models.EmailField(verbose_name='Почта')
-    phone_number = models.CharField('Номер телефона', max_length=15)
+    phone_number = models.CharField('Номер телефона', max_length=30, validators=[validate_phonenumber])
     address = models.CharField('Адрес центрального офиса', max_length=120)
 
     class Meta:

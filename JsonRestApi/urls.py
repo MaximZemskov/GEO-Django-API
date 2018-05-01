@@ -21,7 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # API
-
     path('api/', include('supply.api.urls', namespace='api-supply')),
 
     # APP
