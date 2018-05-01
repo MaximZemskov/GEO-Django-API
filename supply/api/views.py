@@ -1,5 +1,4 @@
 from django.contrib.gis.geos import Point
-from django.core.exceptions import ValidationError
 
 from rest_framework.filters import (
     SearchFilter,

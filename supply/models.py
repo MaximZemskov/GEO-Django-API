@@ -24,7 +24,7 @@ class Supplier(models.Model):
 
 class ServiceArea(models.Model):
     title = models.CharField('Название области', max_length=120, unique=True)
-    poly = geo_models.PolygonField('Область', null=True)
+    poly = geo_models.PolygonField('Область', null=True, srid=4326)
     supplier = models.ForeignKey(Supplier, related_name='areas', on_delete=models.CASCADE)
 
     class Meta:
