@@ -194,3 +194,70 @@ def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     }
     res = api_client.post('/api/service_areas/', data=service_area_data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_api_create_service_unauthorized(client):
+    service_area = ServiceAreaFactory.create()
+
+    data = {
+        "title": "{}".format(get_random_string()),
+        "price": "{}".format(get_random_service_price()),
+        "service_area": service_area.id
+    }
+    res = client.post('/api/services/', data=data)
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_api_create_service(api_client):
+    service_area = ServiceAreaFactory.create()
+
+    data = {
+        "title": "{}".format(get_random_string()),
+        "price": "{}".format(get_random_service_price()),
+        "service_area": service_area.id
+    }
+    res = api_client.post('/api/services/', data=data)
+    assert res.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_api_create_service_with_extra_field(api_client):
+    service_area = ServiceAreaFactory.create()
+
+    data = {
+        "title": "{}".format(get_random_string()),
+        "price": "{}".format(get_random_service_price()),
+        "service_area": service_area.id,
+        "extra_field": "{}".format(get_random_string())
+    }
+    res = api_client.post('/api/services/', data=data)
+    assert res.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_api_create_service_without_title_field(api_client):
+    service_area = ServiceAreaFactory.create()
+
+    data = {
+        "price": "{}".format(get_random_service_price()),
+        "service_area": service_area.id,
+    }
+    res = api_client.post('/api/services/', data=data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.data == {'title': ['This field is required.']}
+
+
+@pytest.mark.django_db
+def test_api_create_service_with_empty_title(api_client):
+    service_area = ServiceAreaFactory.create()
+
+    data = {
+        "title": "",
+        "price": "{}".format(get_random_service_price()),
+        "service_area": service_area.id,
+    }
+    res = api_client.post('/api/services/', data=data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.data == {'title': ['This field may not be blank.']}
