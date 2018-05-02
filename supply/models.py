@@ -38,14 +38,12 @@ class ServiceArea(models.Model):
 class Service(models.Model):
     title = models.CharField('Название услуги', max_length=120, unique=True)
     price = models.CharField('Цена услуги', max_length=60)
-    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE)
+    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE, blank=True)  #
+    # blank нужен для того, чтобы обойти проверку на required при отвправке данных в апи. Выяснить как делать лучше
 
     class Meta:
         verbose_name = 'Услуга'
         verbose_name_plural = 'Услуги'
 
     def __str__(self):
-        return '%s: %s' % (self.title, self.price)
-
-    def __unicode__(self):
         return '%s: %s' % (self.title, self.price)

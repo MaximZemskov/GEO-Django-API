@@ -10,7 +10,7 @@ def _get_random_phone_number():
     return '+{}'.format(random.randint(79068077767, 99968077767))
 
 
-def _get_random_geo_polygon():
+def get_random_geo_polygon():
     count = random.randint(2, 5)  # количество точек между начальной и последней
     first_point = Point(random.randint(-90, 90), random.randint(-90, 90), srid=4326)
     last_point = first_point
@@ -26,7 +26,7 @@ def _get_random_geo_polygon():
     return Polygon(poly, srid=4326)
 
 
-def _get_random_service_price():
+def get_random_service_price():
     return '{}'.format((random.randint(1, 1200000)))
 
 
@@ -45,7 +45,7 @@ class ServiceAreaFactory(factory.django.DjangoModelFactory):
         model = ServiceArea
 
     title = factory.Faker('last_name')
-    poly = factory.LazyAttribute(lambda x: _get_random_geo_polygon())
+    poly = factory.LazyAttribute(lambda x: get_random_geo_polygon())
     supplier = factory.SubFactory(SupplierFactory)
 
 
@@ -54,5 +54,5 @@ class ServiceFactory(factory.django.DjangoModelFactory):
         model = Service
 
     title = factory.Faker('first_name')
-    price = factory.LazyAttribute(lambda x: _get_random_service_price())
+    price = factory.LazyAttribute(lambda x: get_random_service_price())
     service_area = factory.SubFactory(ServiceAreaFactory)

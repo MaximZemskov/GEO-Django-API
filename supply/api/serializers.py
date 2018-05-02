@@ -62,28 +62,29 @@ class ServiceAreaSerializer(GeoFeatureModelSerializer):
         model = ServiceArea
         geo_field = 'poly'
         fields = '__all__'
+        extra_kwargs = {'services': {'required': False}}
 
     def create(self, validated_data):
-        services_data = validated_data.pop('services')
+        services_data = validated_data.pop('services', None)
         service_area = ServiceArea.objects.create(**validated_data)
-
-        for service in services_data:
-            service, created = Service.objects.get_or_create(title=service['title'], price=service['price'],
-                                                             service_area=service_area)
-            service_area.services.add(service)
+        if services_data:
+            for service in services_data:
+                service, created = Service.objects.get_or_create(title=service['title'], price=service['price'],
+                                                                 service_area=service_area)
+                service_area.services.add(service)
         return service_area
 
     def update(self, instance, validated_data):
-        services_data = validated_data.pop('services')
+        services_data = validated_data.pop('services', None)
         instance.title = validated_data.get('title', instance.title)
         instance.poly = validated_data.get('poly', instance.poly)
 
         services_list = []
-
-        for service in services_data:
-            service, created = Service.objects.get_or_create(title=service["title"], price=service['price'],
-                                                             service_area=instance)
-            services_list.append(service)
+        if services_data:
+            for service in services_data:
+                service, created = Service.objects.get_or_create(title=service["title"], price=service['price'],
+                                                                 service_area=instance)
+                services_list.append(service)
 
         instance.services.set(services_list)
         instance.save()
