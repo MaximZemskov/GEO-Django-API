@@ -14,7 +14,7 @@ from rest_framework.generics import (
 )
 
 from rest_framework.permissions import (
-    IsAuthenticatedOrReadOnly,
+    IsAuthenticated,
 )
 
 from supply.models import (
@@ -49,13 +49,13 @@ from .serializers import (
 class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierDetailSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
 class SupplierListApiView(ListAPIView, CreateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierListSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomLimitOffsetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
@@ -66,13 +66,13 @@ class SupplierListApiView(ListAPIView, CreateAPIView):
 class ServiceAreaDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
 class ServiceAreaListApiView(ListAPIView, CreateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomLimitOffsetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
@@ -83,13 +83,13 @@ class ServiceAreaListApiView(ListAPIView, CreateAPIView):
 class ServiceDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
 class ServiceListApiView(ListAPIView, CreateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomLimitOffsetPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
@@ -99,7 +99,7 @@ class ServiceListApiView(ListAPIView, CreateAPIView):
 
 class SupplierSelectionListApiView(ListAPIView):
     serializer_class = SupplierSelectionSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         latitude = self.request.query_params.get('x', None)
