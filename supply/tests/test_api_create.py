@@ -9,7 +9,6 @@ from .factories import (
     get_random_service_price,
     SupplierFactory,
     ServiceAreaFactory,
-    ServiceFactory,
 )
 
 

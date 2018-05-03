@@ -38,7 +38,7 @@ class ServiceArea(models.Model):
 class Service(models.Model):
     title = models.CharField('Название услуги', max_length=120, unique=True)
     price = models.CharField('Цена услуги', max_length=60, validators=[validate_service_price])
-    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE, blank=True)  #
+    service_area = models.ForeignKey(ServiceArea, related_name='services', on_delete=models.CASCADE, null=True)  #
     # blank нужен для того, чтобы обойти проверку на required при отвправке данных в апи. Выяснить как делать лучше
 
     class Meta:
