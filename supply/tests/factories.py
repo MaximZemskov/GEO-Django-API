@@ -6,7 +6,7 @@ from django.contrib.gis.geos import Polygon, Point
 from supply.models import Supplier, ServiceArea, Service
 
 
-def _get_random_phone_number():
+def get_random_phone_number():
     return '+{}'.format(random.randint(79068077767, 99968077767))
 
 
@@ -35,7 +35,7 @@ class SupplierFactory(factory.django.DjangoModelFactory):
         model = Supplier
 
     title = factory.Faker('first_name')
-    phone_number = factory.LazyAttribute(lambda x: _get_random_phone_number())
+    phone_number = factory.LazyAttribute(lambda x: get_random_phone_number())
     email = factory.LazyAttribute(lambda x: '{}@example.com'.format(x.title).lower())
     address = factory.Faker('address')
 
@@ -43,6 +43,11 @@ class SupplierFactory(factory.django.DjangoModelFactory):
 class ServiceAreaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ServiceArea
+
+    def __init__(self, supplier_id=None):
+        self.supplier_id = supplier_id
+        if not self.supplier_id:
+            self.supplier = self.supplier_id
 
     title = factory.Faker('last_name')
     poly = factory.LazyAttribute(lambda x: get_random_geo_polygon())
