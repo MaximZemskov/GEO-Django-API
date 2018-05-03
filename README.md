@@ -13,6 +13,8 @@ $ python manage.py runserver
 ```
 
 ## API
+ + Get selection of service areas by coordinates and service title
+    + [GET: http://127.0.0.1:8000/api/selection/?x=value&y=value&title=value](http://127.0.0.1:8000/api/selection/?x=value&y=value&title=value)
  + List of suppliers(GET). Create supplier(POST)
     + [['GET', 'POST'] http://localhost:8000/api/suppliers/](http://localhost:8000/api/suppliers/)
  + Detail supplier(GET). Update supplier(PUT, PATCH) 
@@ -20,72 +22,196 @@ $ python manage.py runserver
  + List of service areas(GET). Create service area(POST) 
     + [['GET', 'POST'] http://localhost:8000/api/service_areas/](http://localhost:8000/api/service_areas/)
  + Detail service area(GET). Update service area(PUT, PATCH)  
-    + [['GET', 'PUT', 'PATCH'] http://localhost:8000/api/service_areas/<int:id>](http://localhost:8000/api/suppliers/1/)
+    + [['GET', 'PUT', 'PATCH'] http://localhost:8000/api/service_areas/<int:id>/](http://localhost:8000/api/suppliers/1/)
  + List of services(GET). Create service(POST)
     + [['GET', 'POST'] http://localhost:8000/api/services/](http://localhost:8000/api/services/)
  + Detail service(GET). Update service(PUT, PATCH)  
-   + [['GET', 'PUT', 'PATCH'] http://localhost:8000/api/services/<int:id>](http://localhost:8000/api/services/1/)
+   + [['GET', 'PUT', 'PATCH'] http://localhost:8000/api/services/<int:id>/](http://localhost:8000/api/services/1/)
    
 ## Example
-[GET: http://localhost:8000/api/suppliers/](http://localhost:8000/api/suppliers/)
 
+[GET: http://127.0.0.1:8000/api/selection/?x=0&y=0&title=new service 1](http://127.0.0.1:8000/api/selection/?x=value&y=value&title=value)
+response:
 ```json
-{
-    "count": 5,
-    "next": null,
-    "previous": null,
-    "results": [
-        {
-            "id": 2,
-            "url": "http://127.0.0.1:8000/api/suppliers/2/",
-            "title": "qwe",
-            "email": "qwe@asd.com",
-            "phone_number": "wqe",
-            "address": "asd 12"
-        },
-        {
-            "id": 3,
-            "url": "http://127.0.0.1:8000/api/suppliers/3/",
-            "title": "1aw",
-            "email": "asd@asd.com",
-            "phone_number": "12312123",
-            "address": "12312 asd 1212"
-        },
-        {
-            "id": 4,
-            "url": "http://127.0.0.1:8000/api/suppliers/4/",
-            "title": "Pool",
-            "email": "ads@pool.com",
-            "phone_number": "123321",
-            "address": "1123 qww"
-        },
-        {
-            "id": 5,
-            "url": "http://127.0.0.1:8000/api/suppliers/5/",
-            "title": "123",
-            "email": "qwe@qadw.com",
-            "phone_number": "123123",
-            "address": "sdasad"
-        },
-        {
-            "id": 6,
-            "url": "http://127.0.0.1:8000/api/suppliers/6/",
-            "title": "adsad",
-            "email": "1eqasd@asd.com",
-            "phone_number": "ad1212312",
-            "address": "123123123"
+[
+    {
+        "title": "1aw",
+        "areas": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    -24.535633027553555,
+                                    16.073793204512057
+                                ],
+                                [
+                                    33.68628412485123,
+                                    6.084909356168231
+                                ],
+                                [
+                                    23.990892469882954,
+                                    -34.98455647902815
+                                ],
+                                [
+                                    -21.31110280752182,
+                                    -37.22338469506037
+                                ],
+                                [
+                                    -24.535633027553555,
+                                    16.073793204512057
+                                ]
+                            ]
+                        ]
+                    },
+                    "properties": {
+                        "title": "new area",
+                        "services": [
+                            {
+                                "title": "new service 1",
+                                "price": "1005001050"
+                            },
+                            {
+                                "title": "йцуas",
+                                "price": "1200"
+                            },
+                            {
+                                "title": "new service2",
+                                "price": "100500"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": null,
+                    "properties": {
+                        "title": "фывфывф",
+                        "services": [
+                            {
+                                "title": "asdasd",
+                                "price": "1231"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-    ]
-}
+    }
+]
 ```
+
 [POST: http://localhost:8000/api/suppliers/](http://localhost:8000/api/suppliers/)
 data:
 ```json
 {
     "title": "new title",
     "email": "newemail@m.com",
-    "phone_number": "9999999999",
+    "phone_number": "+79999999999",
     "address": "pik street 8"
 }
 ```
+
+[PUT: http://localhost:8000/api/suppliers/<int:id>](http://localhost:8000/api/suppliers/<int:id>)
+data:
+```json
+{
+    "id": 22,
+    "title": "John",
+    "email": "john@example.com",
+    "phone_number": "+94457345439",
+    "address": "9477 Cooke Roads\nNew Morganside, TX 30949-4854"
+}
+```
+
+[POST: http://localhost:8000/api/service_areas/](http://localhost:8000/api/service_areas/)
+```json
+{
+    "services": [],
+    "title": "Some title",
+    "poly": poly in geojson,
+    "supplier": supplier_id
+}
+```
+
+[PUT: http://localhost:8000/api/service_areas/<int:id>](http://localhost:8000/api/service_areas/<int:id>)
+```json
+{
+    "id": 23,
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    -90.0,
+                    87.0
+                ],
+                [
+                    -85.0,
+                    92.0
+                ],
+                [
+                    -89.0,
+                    83.0
+                ],
+                [
+                    -87.0,
+                    84.0
+                ],
+                [
+                    -87.0,
+                    82.0
+                ],
+                [
+                    -90.0,
+                    87.0
+                ]
+            ]
+        ]
+    },
+    "properties": {
+        "url": "http://127.0.0.1:8000/api/service_areas/23/",
+        "services": [
+            {
+                "id": 17,
+                "url": "http://127.0.0.1:8000/api/services/17/",
+                "title": "Brian",
+                "price": "538438",
+                "service_area": 23
+            }
+        ],
+        "title": "Mcmillan",
+        "supplier": 31
+    }
+}
+```
+
+[POST: http://localhost:8000/api/services/](http://localhost:8000/api/services/)
+data:
+```json
+{
+    "title": "Title",
+    "price": "1230",
+    "service_area": service_area_id
+}
+```
+
+[PUT: http://localhost:8000/api/services/<int:id>](http://localhost:8000/api/services/<int:id>)
+data:
+```json
+{
+    "id": 21,
+    "url": "http://127.0.0.1:8000/api/services/21/",
+    "title": "asdasd",
+    "price": "1231",
+    "service_area": 26
+}
+```
+
+
 
