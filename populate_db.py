@@ -64,5 +64,5 @@ def create_fixture_json():
 
 if __name__ == '__main__':
     fixture = create_fixture_json()
-    file = open('fixture.json', 'w')
+    file = open('f.json', 'w')
     file.write(str(fixture))

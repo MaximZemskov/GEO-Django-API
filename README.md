@@ -12,6 +12,13 @@ $ pip install requirements.txt
 $ python manage.py runserver
 ```
 
+## Populate database
+```bash
+$ python manage.py populate_db.py
+$ tr '"' '?' < f.json > f1.json && tr "'" '"' < f1.json > f.json  && tr '?' "'" < f.json > f1.json && rm f.json && mv f1.json fixture.json 
+$ python manage.py loaddata fixture.json 
+```
+
 ## API
  + Get selection of service areas by coordinates and service title
     + [GET: http://127.0.0.1:8000/api/selection/?x=value&y=value&title=value](http://127.0.0.1:8000/api/selection/?x=value&y=value&title=value)
