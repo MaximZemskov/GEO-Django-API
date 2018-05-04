@@ -2,7 +2,16 @@
 
 API allows you to mark **service areas** on a map and filter them by point intersection and title of service.
 
+Example:
++ [http://mzemskov.com/login/](http://mzemskov.com/login/) - login 
+(credentioals: test/secret_test)
++ [http://mzemskov.com/api/suppliers/](http://mzemskov.com/api/suppliers/) -
+ Suppliers list
++ [http://mzemskov.com/api/service_areas/](http://mzemskov.com/api/service_areas/) - Service areas list
++ [http://mzemskov.com/api/services/](http://mzemskov.com/api/services/) - Service list
+
 ![Need to fix problems](https://www.meme-arsenal.com/memes/42a6a91a55abd28ea9a2d1583e5fcacd.jpg)
+
 ## Installation
 
 ```sh
@@ -25,6 +34,14 @@ $ python manage.py populate_db.py
 $ tr \'\" \"\' < f.json > f1.json && rm f.json && mv f1.json fixture.json
 $ python manage.py loaddata fixture.json 
 ```
+
+## Authenticate
+Create superuser
+```bash
+$ python manage.py createsuperuser
+```
+Open [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/) and 
+provide login information
 
 ## API
  + Get selection of service areas by coordinates and service title
