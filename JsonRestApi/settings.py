@@ -25,7 +25,7 @@ SECRET_KEY = 'c+-0$aha^cd1bz@8znpdlns)+#y##dm!=%1t+h$3-(!j7-o09s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,8 +44,6 @@ INSTALLED_APPS = [
 
     # GIS
     'django.contrib.gis',
-
-    # API
 
     # APPS
     'supply.apps.SupplyConfig',
@@ -161,6 +159,8 @@ AUTH_PASSWORD_VALIDATORS = [
                 'NumericPasswordValidator',
     },
 ]
+
+LOGIN_REDIRECT_URL = '/api/suppliers/'
 
 
 # Internationalization

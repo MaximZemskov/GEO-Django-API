@@ -12,3 +12,4 @@ supply/migrations
 supply/tests/.pytest_cache
 
 fixture.json
+core/
