@@ -69,8 +69,11 @@ class ServiceAreaSerializer(GeoFeatureModelSerializer):
         service_area = ServiceArea.objects.create(**validated_data)
         if services_data:
             for service in services_data:
-                service, created = Service.objects.get_or_create(title=service['title'], price=service['price'],
-                                                                 service_area=service_area)
+                service, created = Service.objects.get_or_create(
+                    title=service['title'],
+                    price=service['price'],
+                    service_area=service_area
+                )
                 service_area.services.add(service)
         return service_area
 
@@ -82,8 +85,11 @@ class ServiceAreaSerializer(GeoFeatureModelSerializer):
         services_list = []
         if services_data:
             for service in services_data:
-                service, created = Service.objects.get_or_create(title=service["title"], price=service['price'],
-                                                                 service_area=instance)
+                service, created = Service.objects.get_or_create(
+                    title=service["title"],
+                    price=service['price'],
+                    service_area=instance
+                )
                 services_list.append(service)
 
         instance.services.set(services_list)
@@ -123,6 +129,3 @@ class SupplierSelectionSerializer(ModelSerializer):
             'title',
             'areas'
         )
-
-
-

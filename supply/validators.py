@@ -19,6 +19,7 @@ def validate_service_price(value):
     result = prog.match(value)
     if not result:
         raise ValidationError(
-            _('%(value)s не верный формат цены сервиса. Значение должно быть числом'),
+            _('%(value)s не верный формат цены сервиса. '
+              'Значение должно быть числом'),
             params={'value': value}
         )

@@ -46,7 +46,8 @@ from .serializers import (
 # SUPPLIER
 
 
-class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
+class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView,
+                            RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
     serializer_class = SupplierDetailSerializer
     permission_classes = [IsAuthenticated]
@@ -63,7 +64,8 @@ class SupplierListApiView(ListAPIView, CreateAPIView):
 
 # SERVICE AREA
 
-class ServiceAreaDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
+class ServiceAreaDetailApiView(RetrieveAPIView, DestroyAPIView,
+                               RetrieveUpdateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
     permission_classes = [IsAuthenticated]
@@ -80,7 +82,8 @@ class ServiceAreaListApiView(ListAPIView, CreateAPIView):
 
 # SERVICE
 
-class ServiceDetailApiView(RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView):
+class ServiceDetailApiView(RetrieveAPIView, DestroyAPIView,
+                           RetrieveUpdateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     permission_classes = [IsAuthenticated]
@@ -109,7 +112,8 @@ class SupplierSelectionListApiView(ListAPIView):
         queryset = []
 
         try:
-            point = Point(float(latitude), float(longitude), srid=4326) if latitude and longitude else None
+            point = Point(float(latitude), float(longitude), srid=4326) \
+                if latitude and longitude else None
         except ValueError:
             point = None
 
@@ -117,9 +121,12 @@ class SupplierSelectionListApiView(ListAPIView):
             'areas__poly__intersects': point,
             'areas__services__title': service_title
         }
-        filter_params = {k: v for k, v in filter_params.items() if v is not None}
+        filter_params = {
+            k: v for k, v in filter_params.items()
+            if v is not None
+        }
 
         if filter_params:
-            queryset = Supplier.objects.prefetch_related('areas__services').filter(**filter_params)
+            queryset = Supplier.objects.prefetch_related(
+                'areas__services').filter(**filter_params)
         return queryset
-

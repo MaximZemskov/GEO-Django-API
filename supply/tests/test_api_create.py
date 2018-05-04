@@ -186,7 +186,7 @@ def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     supplier = SupplierFactory.create()
 
     service_area_data = {
-        "services": [], # empty services
+        "services": [],  # empty services
         "title": "{}".format(get_random_string()),
         "poly": {'polygon': 12312},
         "supplier": supplier.id

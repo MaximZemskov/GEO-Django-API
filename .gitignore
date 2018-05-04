@@ -8,9 +8,7 @@
 *.py[cod]
 *.log
 
-__data__/*
-_project_/settings_local.py
-_project_/static/bower_components
-
 supply/migrations
 supply/tests/.pytest_cache
+
+fixture.json
