@@ -1,12 +1,14 @@
 import django
-import json
 
 django.setup()
 
 from django.utils.crypto import get_random_string
 
-from supply.tests.factories import get_random_geo_polygon, get_random_service_price, get_random_phone_number
-
+from supply.tests.factories import (
+    get_random_geo_polygon,
+    get_random_service_price,
+    get_random_phone_number
+)
 
 
 def get_suppliers_json_list():
@@ -53,12 +55,28 @@ def get_service_area_json_list():
     return service_areas_json_list
 
 
+def get_service_json_list():
+    service_json_list = []
+    for idx in range(999):
+        service_json = {
+            "model": "supply.Service",
+            "pk": idx + 1,
+            "fields": {
+                'title': get_random_string(),
+                'price': get_random_service_price(),
+                'service_area': idx + 1
+            }
+        }
+        service_json_list.append(service_json)
+    return service_json_list
+
+
 def create_fixture_json():
     new_fixture = []
     new_fixture += get_suppliers_json_list()
 
     new_fixture += get_service_area_json_list()
-    # new_fixture += get_services_json()
+    new_fixture += get_service_json_list()
     return new_fixture
 
 

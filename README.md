@@ -14,8 +14,9 @@ $ python manage.py runserver
 
 ## Populate database
 ```bash
+$ export DJANGO_SETTINGS_MODULE=JsonRestApi.settings
 $ python manage.py populate_db.py
-$ tr '"' '?' < f.json > f1.json && tr "'" '"' < f1.json > f.json  && tr '?' "'" < f.json > f1.json && rm f.json && mv f1.json fixture.json 
+$ tr \'\" \"\' < f.json > f1.json && rm f.json && mv f1.json fixture.json
 $ python manage.py loaddata fixture.json 
 ```
 
