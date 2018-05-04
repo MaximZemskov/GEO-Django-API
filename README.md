@@ -3,8 +3,7 @@
 API allows you to mark **service areas** on a map and filter them by point intersection and title of service.
 
 Example:
-+ [http://mzemskov.com/selection/?x=0&y=0](http://mzemskov
-.com/selection/?x=0&y=0) - Selection suppliers by latitude, longtitude and 
++ [http://mzemskov.com/selection/?x=0&y=0](http://mzemskov.com/selection/?x=0&y=0) - Selection suppliers by latitude, longtitude and 
 service title
 + [http://mzemskov.com/login/](http://mzemskov.com/login/) - login 
 (credentioals: test/secret_test)
