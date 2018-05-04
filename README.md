@@ -12,6 +12,12 @@ $ pip install requirements.txt
 $ python manage.py runserver
 ```
 
+## Tests
+```bash
+$ export DJANGO_SETTINGS_MODULE=JsonRestApi.settings
+$ pytest
+```
+
 ## Populate database
 ```bash
 $ export DJANGO_SETTINGS_MODULE=JsonRestApi.settings
