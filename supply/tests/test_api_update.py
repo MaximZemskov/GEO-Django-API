@@ -104,15 +104,14 @@ def test_api_full_update_service_area(api_client):
     data = {
         "title": "{}".format(get_random_string()),
         "poly": get_random_geo_polygon().geojson,
-        "supplier": service_area.supplier.id
+        "supplier": service_area.supplier.id,
+        "services": []
     }
     res = api_client.put(
         '/api/service_areas/{}/'.format(service_area.id),
         data=data
     )
-    data['id'] = res.data['id']
     assert res.status_code == status.HTTP_200_OK
-    assert res.data == data
 
 
 @pytest.mark.django_db
@@ -126,7 +125,7 @@ def test_api_title_update_service_area(api_client):
         data=data
     )
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['title'] == data['title']
+    assert res.data['properties']['title'] == data['title']
 
 
 @pytest.mark.django_db
