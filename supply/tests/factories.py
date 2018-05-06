@@ -11,7 +11,6 @@ def get_random_phone_number():
 
 
 def get_random_geo_polygon():
-    # количество точек между начальной и последней
     count = random.randint(2, 5)
     first_point = Point(
         random.randint(-90, 90),

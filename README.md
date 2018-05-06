@@ -1,4 +1,4 @@
-# JSON REST API
+# GEO Django
 
 API allows you to mark **service areas** on a map and filter them by point intersection and title of service.
 
@@ -25,13 +25,13 @@ $ python manage.py runserver
 
 ## Tests
 ```bash
-$ export DJANGO_SETTINGS_MODULE=JsonRestApi.settings
+$ export DJANGO_SETTINGS_MODULE=_project_.settings
 $ pytest
 ```
 
 ## Populate database
 ```bash
-$ export DJANGO_SETTINGS_MODULE=JsonRestApi.settings
+$ export DJANGO_SETTINGS_MODULE=_project_.settings
 $ python manage.py populate_db.py
 $ tr \'\" \"\' < f.json > f1.json && rm f.json && mv f1.json fixture.json
 $ python manage.py loaddata fixture.json 
