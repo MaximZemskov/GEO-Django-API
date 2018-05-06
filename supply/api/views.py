@@ -1,4 +1,5 @@
 from django.contrib.gis.geos import Point
+from django.db.models import Prefetch
 
 from rest_framework.generics import (
     CreateAPIView,
@@ -101,5 +102,9 @@ class SupplierSelectionListApiView(ListAPIView):
 
         if filter_params:
             queryset = Supplier.objects.prefetch_related(
-                'areas__services').filter(**filter_params)
+                Prefetch('areas', queryset=ServiceArea.objects.filter(
+                    poly__intersects=point)),
+                Prefetch('areas__services', queryset=Service.objects.filter(
+                    title=service_title))
+            ).filter(**filter_params)
         return queryset
