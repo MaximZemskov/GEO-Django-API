@@ -41,9 +41,7 @@ class Service(models.Model):
     price = models.CharField('Цена услуги', max_length=60,
                              validators=[validate_service_price])
     service_area = models.ForeignKey(ServiceArea, related_name='services',
-                                     on_delete=models.CASCADE, null=True)  #
-    # null нужен для того, чтобы обойти проверку на required при
-    # отвправке данных в апи. Выяснить как делать лучше
+                                     on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = 'Услуга'

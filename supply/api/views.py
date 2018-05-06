@@ -4,7 +4,6 @@ from rest_framework.filters import (
     SearchFilter,
     OrderingFilter,
 )
-
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -12,7 +11,6 @@ from rest_framework.generics import (
     DestroyAPIView,
     RetrieveAPIView,
 )
-
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -22,11 +20,9 @@ from supply.models import (
     ServiceArea,
     Service
 )
-
 from .pagination import (
     CustomLimitOffsetPagination,
 )
-
 from .serializers import (
     # SUPPLIER
     SupplierDetailSerializer,
@@ -112,8 +108,8 @@ class SupplierSelectionListApiView(ListAPIView):
         queryset = []
 
         try:
-            point = Point(float(latitude), float(longitude), srid=4326) \
-                if latitude and longitude else None
+            point = Point(float(latitude), float(longitude), srid=4326) if \
+                latitude is not None and longitude is not None else None
         except ValueError:
             point = None
 

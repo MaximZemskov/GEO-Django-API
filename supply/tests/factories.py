@@ -1,6 +1,6 @@
-import factory
 import random
 
+import factory
 from django.contrib.gis.geos import Polygon, Point
 
 from supply.models import Supplier, ServiceArea, Service
@@ -53,11 +53,6 @@ class SupplierFactory(factory.django.DjangoModelFactory):
 class ServiceAreaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ServiceArea
-
-    def __init__(self, supplier_id=None):
-        self.supplier_id = supplier_id
-        if not self.supplier_id:
-            self.supplier = self.supplier_id
 
     title = factory.Faker('last_name')
     poly = factory.LazyAttribute(lambda x: get_random_geo_polygon())

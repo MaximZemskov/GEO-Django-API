@@ -2,7 +2,6 @@ from rest_framework.serializers import (
     ModelSerializer,
     HyperlinkedIdentityField,
 )
-
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from supply.models import (
@@ -66,6 +65,7 @@ class ServiceAreaSerializer(GeoFeatureModelSerializer):
 
     def create(self, validated_data):
         services_data = validated_data.pop('services', None)
+
         service_area = ServiceArea.objects.create(**validated_data)
         if services_data:
             for service in services_data:

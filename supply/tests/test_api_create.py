@@ -1,7 +1,8 @@
 import pytest
+from django.utils.crypto import get_random_string
+
 from rest_framework.test import APIClient
 from rest_framework import status
-from django.utils.crypto import get_random_string
 
 from .fixtures import create_user
 from .factories import (
@@ -114,7 +115,7 @@ def test_api_create_service_area_with_empty_services(api_client):
     supplier = SupplierFactory.create()
 
     service_area_data = {
-            "services": [],  # empty services
+            "services": [],
             "title": "{}".format(get_random_string()),
             "poly": get_random_geo_polygon().geojson,
             "supplier": supplier.id
@@ -186,7 +187,7 @@ def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     supplier = SupplierFactory.create()
 
     service_area_data = {
-        "services": [],  # empty services
+        "services": [],
         "title": "{}".format(get_random_string()),
         "poly": {'polygon': 12312},
         "supplier": supplier.id
