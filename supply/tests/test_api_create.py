@@ -27,6 +27,7 @@ def api_client():
     return client
 
 
+@pytest.mark.django_db
 def test_api_create_supplier_unauthorized(client):
     data = {
         "title": "{}".format(get_random_string()),
