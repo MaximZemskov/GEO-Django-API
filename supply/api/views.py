@@ -122,7 +122,4 @@ class SupplierSelectionListApiView(ListAPIView):
             self.queryset = Supplier.objects.prefetch_related(
                 *inner_filter_params).filter(**filter_params).distinct()
 
-        if service_title:
-            self.queryset = self.queryset.filter(
-                areas__services__title=service_title)
         return self.queryset
