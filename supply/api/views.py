@@ -16,8 +16,7 @@ from supply.models import (
 )
 from .serializers import (
     # SUPPLIER
-    SupplierDetailSerializer,
-    SupplierListSerializer,
+    SupplierSerializer,
 
     # SERVICE AREA
     ServiceAreaSerializer,
@@ -36,12 +35,12 @@ from .serializers import (
 class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView,
                             RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
-    serializer_class = SupplierDetailSerializer
+    serializer_class = SupplierSerializer
 
 
 class SupplierListApiView(ListAPIView, CreateAPIView):
     queryset = Supplier.objects.all()
-    serializer_class = SupplierListSerializer
+    serializer_class = SupplierSerializer
     search_fields = ['title']
 
 

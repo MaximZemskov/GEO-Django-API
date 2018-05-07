@@ -51,7 +51,8 @@ def test_api_full_update_supplier(api_client):
         "address": "{}".format(get_random_string())
     }
     res = api_client.put('/api/suppliers/{}/'.format(supplier.id), data=data)
-    data['id'] = res.data['id']
+    data['pk'] = res.data['pk']
+    data['url'] = res.data['url']
     assert res.status_code == status.HTTP_200_OK
     assert res.data == data
 
