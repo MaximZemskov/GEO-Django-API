@@ -7,7 +7,7 @@ from supply.models import Supplier, ServiceArea, Service
 
 
 def get_random_phone_number():
-    return '+{}'.format(random.randint(79068077767, 99968077767))
+    return '+{}'.format(random.randint(79068077767, 89968077767))
 
 
 def get_random_geo_polygon():

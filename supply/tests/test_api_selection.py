@@ -120,3 +120,17 @@ def test_api_selection_with_miss_poly(api_client):
     res = api_client.get('/api/selection/?x={}&y={}'.format(x, y))
     assert res.status_code == status.HTTP_200_OK
     assert res.data['count'] == 0
+
+
+@pytest.mark.django_db
+def test_api_selection_without_query(api_client):
+    supplier = SupplierFactory.create()
+
+    test_poly = Polygon(((11, 20), (20, 40), (21, 30), (30, 10), (11, 20)))
+
+    ServiceAreaFactory.create(supplier=supplier, poly=test_poly)
+
+    res = api_client.get('/api/selection/')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 0
+    assert len(res.data['results']) == 0
