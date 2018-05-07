@@ -13,6 +13,9 @@ from .factories import (
 )
 
 
+pytestmark = pytest.mark.django_db
+
+
 @pytest.fixture
 def client():
     return APIClient()
@@ -27,7 +30,6 @@ def api_client():
     return client
 
 
-@pytest.mark.django_db
 def test_api_create_supplier_unauthorized(client):
     data = {
         "title": "{}".format(get_random_string()),
@@ -39,7 +41,6 @@ def test_api_create_supplier_unauthorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_create_supplier_without_title(api_client):
     data = {
         "email": "{}@example.com".format(get_random_string()),
@@ -55,7 +56,6 @@ def test_api_create_supplier_without_title(api_client):
     }
 
 
-@pytest.mark.django_db
 def test_api_create_supplier_with_empty_title(api_client):
     data = {
         "title": "",
@@ -72,7 +72,6 @@ def test_api_create_supplier_with_empty_title(api_client):
     }
 
 
-@pytest.mark.django_db
 def test_api_create_supplier_with_extra_field(api_client):
     data = {
         "title": "{}".format(get_random_string()),
@@ -90,7 +89,6 @@ def test_api_create_supplier_with_extra_field(api_client):
     assert res.data == data
 
 
-@pytest.mark.django_db
 def test_api_create_supplier(api_client):
     data = {
         "title": "{}".format(get_random_string()),
@@ -106,7 +104,6 @@ def test_api_create_supplier(api_client):
     assert res.data == data
 
 
-@pytest.mark.django_db
 def test_api_create_service_area_unauthorized(client):
     supplier = SupplierFactory.create()
 
@@ -120,7 +117,6 @@ def test_api_create_service_area_unauthorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_create_service_area_with_empty_services(api_client):
     supplier = SupplierFactory.create()
 
@@ -136,7 +132,6 @@ def test_api_create_service_area_with_empty_services(api_client):
     assert res.data['properties']['title'] == service_area_data['title']
 
 
-@pytest.mark.django_db
 def test_api_create_service_area_without_services(api_client):
     supplier = SupplierFactory.create()
 
@@ -155,7 +150,6 @@ def test_api_create_service_area_without_services(api_client):
     }
 
 
-@pytest.mark.django_db
 def test_api_create_service_area_with_service(api_client):
     supplier = SupplierFactory.create()
 
@@ -179,7 +173,6 @@ def test_api_create_service_area_with_service(api_client):
         'title']
 
 
-@pytest.mark.django_db
 def test_api_create_service_area_with_few_services(api_client):
     supplier = SupplierFactory.create()
 
@@ -204,7 +197,6 @@ def test_api_create_service_area_with_few_services(api_client):
     assert len(res.data['properties']['services']) == 2
 
 
-@pytest.mark.django_db
 def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     supplier = SupplierFactory.create()
 
@@ -224,7 +216,6 @@ def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     }
 
 
-@pytest.mark.django_db
 def test_api_create_service_unauthorized(client):
     service_area = ServiceAreaFactory.create()
 
@@ -237,7 +228,6 @@ def test_api_create_service_unauthorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_create_service(api_client):
     service_area = ServiceAreaFactory.create()
 
@@ -254,7 +244,6 @@ def test_api_create_service(api_client):
     assert res.data == data
 
 
-@pytest.mark.django_db
 def test_api_create_service_with_extra_field(api_client):
     service_area = ServiceAreaFactory.create()
 
@@ -273,7 +262,6 @@ def test_api_create_service_with_extra_field(api_client):
     assert res.data == data
 
 
-@pytest.mark.django_db
 def test_api_create_service_without_title_field(api_client):
     service_area = ServiceAreaFactory.create()
 
@@ -286,7 +274,6 @@ def test_api_create_service_without_title_field(api_client):
     assert res.data == {'title': ['This field is required.']}
 
 
-@pytest.mark.django_db
 def test_api_create_service_with_empty_title(api_client):
     service_area = ServiceAreaFactory.create()
 

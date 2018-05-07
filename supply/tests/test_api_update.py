@@ -12,6 +12,9 @@ from .factories import (
 )
 
 
+pytestmark = pytest.mark.django_db
+
+
 @pytest.fixture
 def client():
     return APIClient()
@@ -26,7 +29,6 @@ def api_client():
     return client
 
 
-@pytest.mark.django_db
 def test_api_full_update_supplier_anauthhorized(client):
     supplier = SupplierFactory.create()
 
@@ -40,7 +42,6 @@ def test_api_full_update_supplier_anauthhorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_full_update_supplier(api_client):
     supplier = SupplierFactory.create()
 
@@ -57,7 +58,6 @@ def test_api_full_update_supplier(api_client):
     assert res.data == data
 
 
-@pytest.mark.django_db
 def test_api_title_update_supplier(api_client):
     supplier = SupplierFactory.create()
 
@@ -70,7 +70,6 @@ def test_api_title_update_supplier(api_client):
     assert res.data['title'] == data['title']
 
 
-@pytest.mark.django_db
 def test_api_update_supplier_by_extra_field(api_client):
     supplier = SupplierFactory.create()
 
@@ -86,7 +85,6 @@ def test_api_update_supplier_by_extra_field(api_client):
     assert res.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.django_db
 def test_api_full_update_service_area_anauthhorized(client):
     service_area = ServiceAreaFactory.create()
 
@@ -99,7 +97,6 @@ def test_api_full_update_service_area_anauthhorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_full_update_service_area(api_client):
     service_area = ServiceAreaFactory.create()
 
@@ -114,7 +111,6 @@ def test_api_full_update_service_area(api_client):
     assert res.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.django_db
 def test_api_title_update_service_area(api_client):
     service_area = ServiceAreaFactory.create()
 
@@ -127,7 +123,6 @@ def test_api_title_update_service_area(api_client):
     assert res.data['properties']['title'] == data['title']
 
 
-@pytest.mark.django_db
 def test_api_update_service_area_by_extra_field(api_client):
     service_area = ServiceAreaFactory.create()
 

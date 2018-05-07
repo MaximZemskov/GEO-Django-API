@@ -12,6 +12,9 @@ from .factories import (
 )
 
 
+pytestmark = pytest.mark.django_db
+
+
 @pytest.fixture
 def client():
     return APIClient()
@@ -26,7 +29,6 @@ def api_client():
     return client
 
 
-@pytest.mark.django_db
 def test_api_selection_unauthorized(client):
     supplier = SupplierFactory.create()
 
@@ -42,7 +44,6 @@ def test_api_selection_unauthorized(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.django_db
 def test_api_selection_with_one_poly(api_client):
     supplier = SupplierFactory.create()
 
@@ -58,7 +59,6 @@ def test_api_selection_with_one_poly(api_client):
     assert res.data['count'] == 1
 
 
-@pytest.mark.django_db
 def test_api_selection_with_few_poly(api_client):
     supplier_1 = SupplierFactory.create()
     supplier_2 = SupplierFactory.create()
@@ -77,7 +77,6 @@ def test_api_selection_with_few_poly(api_client):
     assert res.data['count'] == 2
 
 
-@pytest.mark.django_db
 def test_api_selection_with_few_poly_and_titles(api_client):
     supplier_1 = SupplierFactory.create()
     supplier_2 = SupplierFactory.create()
@@ -106,7 +105,6 @@ def test_api_selection_with_few_poly_and_titles(api_client):
                'services'][0]['title'] == test_title
 
 
-@pytest.mark.django_db
 def test_api_selection_with_miss_poly(api_client):
     supplier = SupplierFactory.create()
 
@@ -122,7 +120,6 @@ def test_api_selection_with_miss_poly(api_client):
     assert res.data['count'] == 0
 
 
-@pytest.mark.django_db
 def test_api_selection_without_query(api_client):
     supplier = SupplierFactory.create()
 
