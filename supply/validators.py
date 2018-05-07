@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def validate_phonenumber(value):
-    prog = re.compile('^((8|\+7)\d{10}$)')
+    prog = re.compile('^((8|\+7|9|\+)\d{11}$)')
     result = prog.match(value)
     if not result:
         raise ValidationError(
