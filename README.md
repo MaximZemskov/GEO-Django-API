@@ -3,8 +3,7 @@
 API allows you to mark **service areas** on a map and filter them by point intersection and title of service.
 
 Example:
-+ [http://mzemskov.com/api/selection/?x=0&y=0](http://mzemskov.com/selection/?x=0&y=0) - Selection suppliers by latitude, longtitude and 
-service title
++ [http://mzemskov.com/api/selection/?x=-26&y=73](http://mzemskov.com/api/selection/?x=-26&y=73) - Selection suppliers by latitude, longtitude and service title
 + [http://mzemskov.com/login/](http://mzemskov.com/login/) - login 
 (credentioals: test/secret_test)
 + [http://mzemskov.com/api/suppliers/](http://mzemskov.com/api/suppliers/) -
@@ -25,14 +24,12 @@ $ python manage.py runserver
 
 ## Tests
 ```bash
-$ export DJANGO_SETTINGS_MODULE=_project_.settings
 $ pytest
 ```
 
 ## Populate database
 ```bash
-$ export DJANGO_SETTINGS_MODULE=_project_.settings
-$ python manage.py populate_db.py
+$ python populate_db.py
 $ tr \'\" \"\' < f.json > f1.json && rm f.json && mv f1.json fixture.json
 $ python manage.py loaddata fixture.json 
 ```
