@@ -26,7 +26,7 @@ class SupplierSerializer(ModelSerializer):
             'email',
             'phone_number',
             'address',
-    )
+        )
 
 
 # SERVICE

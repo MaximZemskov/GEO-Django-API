@@ -84,6 +84,11 @@ def test_api_create_supplier_with_extra_field(api_client):
     res = api_client.post('/api/suppliers/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
 
+    res.data.pop('url')
+    res.data.pop('pk')
+    data.pop('extra_field')
+    assert res.data == data
+
 
 @pytest.mark.django_db
 def test_api_create_supplier(api_client):
@@ -95,6 +100,10 @@ def test_api_create_supplier(api_client):
     }
     res = api_client.post('/api/suppliers/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
+
+    res.data.pop('url')
+    res.data.pop('pk')
+    assert res.data == data
 
 
 @pytest.mark.django_db
@@ -124,6 +133,8 @@ def test_api_create_service_area_with_empty_services(api_client):
     res = api_client.post('/api/service_areas/', data=service_area_data)
     assert res.status_code == status.HTTP_201_CREATED
 
+    assert res.data['properties']['title'] == service_area_data['title']
+
 
 @pytest.mark.django_db
 def test_api_create_service_area_without_services(api_client):
@@ -136,6 +147,12 @@ def test_api_create_service_area_without_services(api_client):
     }
     res = api_client.post('/api/service_areas/', data=service_area_data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+    assert res.data == {
+        "services": [
+            "This field is required."
+        ]
+    }
 
 
 @pytest.mark.django_db
@@ -156,6 +173,10 @@ def test_api_create_service_area_with_service(api_client):
     res = api_client.post('/api/service_areas/', data=service_area_data)
     assert res.status_code == status.HTTP_201_CREATED
     assert len(res.data['properties']['services']) == 1
+    assert res.data['properties']['services'][0]['price'] == service_data[
+        'price']
+    assert res.data['properties']['services'][0]['title'] == service_data[
+        'title']
 
 
 @pytest.mark.django_db
@@ -195,6 +216,12 @@ def test_api_create_srvice_area_with_no_valid_poly_field(api_client):
     }
     res = api_client.post('/api/service_areas/', data=service_area_data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
+    assert res.data == {
+        'poly': [
+            'Invalid format: string or unicode input unrecognized as GeoJSON,'
+            ' WKT EWKT or HEXEWKB.'
+        ]
+    }
 
 
 @pytest.mark.django_db
@@ -222,6 +249,10 @@ def test_api_create_service(api_client):
     res = api_client.post('/api/services/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
 
+    res.data.pop('pk')
+    res.data.pop('url')
+    assert res.data == data
+
 
 @pytest.mark.django_db
 def test_api_create_service_with_extra_field(api_client):
@@ -235,6 +266,11 @@ def test_api_create_service_with_extra_field(api_client):
     }
     res = api_client.post('/api/services/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
+
+    res.data.pop('pk')
+    res.data.pop('url')
+    data.pop('extra_field')
+    assert res.data == data
 
 
 @pytest.mark.django_db
