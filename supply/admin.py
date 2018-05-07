@@ -16,9 +16,6 @@ class ServiceAreaAdmin(admin.GeoModelAdmin):
          {
              'fields': [
                 'poly',
-             ],
-             'classes': [
-                 'collapse'
              ]
          }
          ),
