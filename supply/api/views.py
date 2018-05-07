@@ -83,7 +83,7 @@ class SupplierSelectionListApiView(ListAPIView):
         longitude = self.request.query_params.get('y', None)
         service_title = self.request.query_params.get('title', None)
 
-        queryset = []
+        self.queryset = []
 
         try:
             point = Point(float(latitude), float(longitude), srid=4326) if \
@@ -92,7 +92,7 @@ class SupplierSelectionListApiView(ListAPIView):
             point = None
 
         filter_params = {
-            'areas__poly__covers': point,
+            'areas__poly__intersects': point,
             'areas__services__title': service_title
         }
         filter_params = {
@@ -100,11 +100,17 @@ class SupplierSelectionListApiView(ListAPIView):
             if v is not None
         }
 
+        inner_filter_params = []
+        if point:
+            inner_filter_params += (Prefetch('areas',
+                                             queryset=ServiceArea.objects.
+                                             filter(poly__intersects=point)),)
+        if service_title:
+            inner_filter_params += (Prefetch('areas__services',
+                                             queryset=Service.objects.
+                                             filter(title=service_title)),)
+
         if filter_params:
-            queryset = Supplier.objects.prefetch_related(
-                Prefetch('areas', queryset=ServiceArea.objects.filter(
-                    poly__intersects=point)),
-                Prefetch('areas__services', queryset=Service.objects.filter(
-                    title=service_title))
-            ).filter(**filter_params)
-        return queryset
+            self.queryset = Supplier.objects.prefetch_related(
+                *inner_filter_params).filter(**filter_params).distinct()
+        return self.queryset
