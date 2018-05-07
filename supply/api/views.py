@@ -108,8 +108,21 @@ class SupplierSelectionListApiView(ListAPIView):
             inner_filter_params += (Prefetch('areas__services',
                                              queryset=Service.objects.
                                              filter(title=service_title)),)
+        if point and service_title:
+            inner_filter_params = (
+                Prefetch('areas', queryset=ServiceArea.objects.
+                         filter(poly__intersects=point,
+                                services__title=service_title
+                                )),
+                Prefetch('areas__services',queryset=Service.objects.
+                         filter(title=service_title))
+            )
 
         if filter_params:
             self.queryset = Supplier.objects.prefetch_related(
                 *inner_filter_params).filter(**filter_params).distinct()
+
+        if service_title:
+            self.queryset = self.queryset.filter(
+                areas__services__title=service_title)
         return self.queryset
