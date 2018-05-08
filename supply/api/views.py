@@ -101,13 +101,21 @@ class SupplierSelectionListApiView(ListAPIView):
 
         inner_filter_params = []
         if point:
-            inner_filter_params += (Prefetch('areas',
-                                             queryset=ServiceArea.objects.
-                                             filter(poly__intersects=point)),)
+            inner_filter_params += (
+                Prefetch('areas',
+                         queryset=ServiceArea.objects.
+                         filter(poly__intersects=point)),)
+        if service_title and not point:
+            inner_filter_params += (
+                Prefetch('areas',
+                         queryset=ServiceArea.objects.
+                         filter(services__title=service_title)),)
         if service_title:
-            inner_filter_params += (Prefetch('areas__services',
-                                             queryset=Service.objects.
-                                             filter(title=service_title)),)
+            inner_filter_params += (
+                Prefetch('areas__services',
+                         queryset=Service.objects.
+                         filter(title=service_title)),)
+
         if point and service_title:
             inner_filter_params = (
                 Prefetch('areas', queryset=ServiceArea.objects.
