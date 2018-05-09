@@ -39,7 +39,7 @@ class ServiceArea(models.Model):
 
 
 class Service(models.Model):
-    title = models.CharField(_('Название услуги'), max_length=120, unique=True)
+    title = models.CharField(_('Название услуги'), max_length=120)
     price = models.CharField(_('Цена услуги'), max_length=60,
                              validators=[validate_service_price])
     service_area = models.ForeignKey(ServiceArea, related_name='services',
