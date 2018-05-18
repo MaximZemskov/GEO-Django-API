@@ -1,9 +1,5 @@
 from django.contrib.gis.geos import Point
-
-from rest_framework.filters import (
-    SearchFilter,
-    OrderingFilter,
-)
+from django.db.models import Prefetch
 
 from rest_framework.generics import (
     CreateAPIView,
@@ -13,24 +9,14 @@ from rest_framework.generics import (
     RetrieveAPIView,
 )
 
-from rest_framework.permissions import (
-    IsAuthenticated,
-)
-
 from supply.models import (
     Supplier,
     ServiceArea,
     Service
 )
-
-from .pagination import (
-    CustomLimitOffsetPagination,
-)
-
 from .serializers import (
     # SUPPLIER
-    SupplierDetailSerializer,
-    SupplierListSerializer,
+    SupplierSerializer,
 
     # SERVICE AREA
     ServiceAreaSerializer,
@@ -49,16 +35,12 @@ from .serializers import (
 class SupplierDetailApiView(RetrieveAPIView, DestroyAPIView,
                             RetrieveUpdateAPIView):
     queryset = Supplier.objects.all()
-    serializer_class = SupplierDetailSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = SupplierSerializer
 
 
 class SupplierListApiView(ListAPIView, CreateAPIView):
     queryset = Supplier.objects.all()
-    serializer_class = SupplierListSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = CustomLimitOffsetPagination
-    filter_backends = [SearchFilter, OrderingFilter]
+    serializer_class = SupplierSerializer
     search_fields = ['title']
 
 
@@ -68,15 +50,11 @@ class ServiceAreaDetailApiView(RetrieveAPIView, DestroyAPIView,
                                RetrieveUpdateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class ServiceAreaListApiView(ListAPIView, CreateAPIView):
     queryset = ServiceArea.objects.all()
     serializer_class = ServiceAreaSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = CustomLimitOffsetPagination
-    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
 
 
@@ -86,15 +64,11 @@ class ServiceDetailApiView(RetrieveAPIView, DestroyAPIView,
                            RetrieveUpdateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class ServiceListApiView(ListAPIView, CreateAPIView):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = CustomLimitOffsetPagination
-    filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title']
 
 
@@ -102,18 +76,17 @@ class ServiceListApiView(ListAPIView, CreateAPIView):
 
 class SupplierSelectionListApiView(ListAPIView):
     serializer_class = SupplierSelectionSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         latitude = self.request.query_params.get('x', None)
         longitude = self.request.query_params.get('y', None)
         service_title = self.request.query_params.get('title', None)
 
-        queryset = []
+        self.queryset = []
 
         try:
-            point = Point(float(latitude), float(longitude), srid=4326) \
-                if latitude and longitude else None
+            point = Point(float(latitude), float(longitude), srid=4326) if \
+                latitude and longitude else None
         except ValueError:
             point = None
 
@@ -126,7 +99,35 @@ class SupplierSelectionListApiView(ListAPIView):
             if v is not None
         }
 
+        inner_filter_params = []
+        if point:
+            inner_filter_params += (
+                Prefetch('areas',
+                         queryset=ServiceArea.objects.
+                         filter(poly__intersects=point)),)
+        if service_title and not point:
+            inner_filter_params += (
+                Prefetch('areas',
+                         queryset=ServiceArea.objects.
+                         filter(services__title=service_title)),)
+        if service_title:
+            inner_filter_params += (
+                Prefetch('areas__services',
+                         queryset=Service.objects.
+                         filter(title=service_title)),)
+
+        if point and service_title:
+            inner_filter_params = (
+                Prefetch('areas', queryset=ServiceArea.objects.
+                         filter(poly__intersects=point,
+                                services__title=service_title)
+                         ),
+                Prefetch('areas__services', queryset=Service.objects.
+                         filter(title=service_title))
+            )
+
         if filter_params:
-            queryset = Supplier.objects.prefetch_related(
-                'areas__services').filter(**filter_params)
-        return queryset
+            self.queryset = Supplier.objects.prefetch_related(
+                *inner_filter_params).filter(**filter_params).distinct()
+
+        return self.queryset

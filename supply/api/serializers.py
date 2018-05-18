@@ -2,7 +2,6 @@ from rest_framework.serializers import (
     ModelSerializer,
     HyperlinkedIdentityField,
 )
-
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from supply.models import (
@@ -12,13 +11,7 @@ from supply.models import (
 )
 
 
-class SupplierDetailSerializer(ModelSerializer):
-    class Meta:
-        model = Supplier
-        fields = '__all__'
-
-
-class SupplierListSerializer(ModelSerializer):
+class SupplierSerializer(ModelSerializer):
     url = HyperlinkedIdentityField(
         view_name='api-supply:suppliers-detail',
         lookup_field='pk',
@@ -26,14 +19,14 @@ class SupplierListSerializer(ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = [
-            'id',
+        fields = (
+            'pk',
             'url',
             'title',
             'email',
             'phone_number',
             'address',
-        ]
+        )
 
 
 # SERVICE
@@ -46,7 +39,13 @@ class ServiceSerializer(ModelSerializer):
 
     class Meta:
         model = Service
-        fields = '__all__'
+        fields = (
+            'pk',
+            'url',
+            'title',
+            'price',
+            'service_area'
+        )
 
 
 # SERVICE AREA
@@ -61,11 +60,18 @@ class ServiceAreaSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = ServiceArea
         geo_field = 'poly'
-        fields = '__all__'
+        fields = (
+            'pk',
+            'url',
+            'services',
+            'title',
+            'supplier'
+        )
         extra_kwargs = {'services': {'required': False}}
 
     def create(self, validated_data):
         services_data = validated_data.pop('services', None)
+
         service_area = ServiceArea.objects.create(**validated_data)
         if services_data:
             for service in services_data:

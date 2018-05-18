@@ -1,17 +1,16 @@
-import factory
 import random
 
+import factory
 from django.contrib.gis.geos import Polygon, Point
 
 from supply.models import Supplier, ServiceArea, Service
 
 
 def get_random_phone_number():
-    return '+{}'.format(random.randint(79068077767, 99968077767))
+    return '+{}'.format(random.randint(79068077767, 89968077767))
 
 
 def get_random_geo_polygon():
-    # количество точек между начальной и последней
     count = random.randint(2, 5)
     first_point = Point(
         random.randint(-90, 90),
@@ -53,11 +52,6 @@ class SupplierFactory(factory.django.DjangoModelFactory):
 class ServiceAreaFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ServiceArea
-
-    def __init__(self, supplier_id=None):
-        self.supplier_id = supplier_id
-        if not self.supplier_id:
-            self.supplier = self.supplier_id
 
     title = factory.Faker('last_name')
     poly = factory.LazyAttribute(lambda x: get_random_geo_polygon())
